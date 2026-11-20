@@ -1,0 +1,17 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  html:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir que as páginas existem e não estão vazias
+        run: |
+          for f in index.html privacidade.html; do
+            test -s "$f" || { echo "faltando ou vazio: $f"; exit 1; }
+            grep -qi "<html" "$f" || { echo "sem <html>: $f"; exit 1; }
+          done
